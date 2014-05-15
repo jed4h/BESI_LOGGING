@@ -12,7 +12,7 @@ import socket
 def lightSense(startDateTime, hostIP, BASE_PORT,  streaming=True, logging=True):
     server_address = (hostIP, BASE_PORT)
     startTimeDT = NTPTime.stripDateTime(startDateTime)
-    lightFileName = "/media/card/Relay_Station{0}/Light/Light{1}.txt".format(BASE_PORT, startTimeDT)
+    lightFileName = BASE_PATH+"Relay_Station{0}/Light/Light{1}.txt".format(BASE_PORT, startTimeDT)
 
     
     light_i2c = i2c_light_init(LIGHT_ADDR)
@@ -34,7 +34,7 @@ def lightSense(startDateTime, hostIP, BASE_PORT,  streaming=True, logging=True):
 			startTimeDT = NTPTime.stripDateTime(startDateTime)
 			#startTimeDT = datetime.datetime.now()
 			
-			lightFileName = "/media/card/Relay_Station{0}/Light/Light{1}.txt".format(BASE_PORT, startTimeDT)
+			lightFileName = BASE_PATH+"Relay_Station{0}/Light/Light{1}.txt".format(BASE_PORT, startTimeDT)
 			with open(lightFileName, "w") as lightFile:
 			    lightFile.write(startDateTime+"\n")
 			    lightFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))

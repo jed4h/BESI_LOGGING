@@ -14,7 +14,8 @@ LOOP_DELAY = 0.1                # loop time in seconds
 IS_STREAMING = True             # stream to base station 
 IS_LOGGING = True               # log on Beaglebone
 FILE_LENGTH = 300
-
+#BASE_PATH = "/media/card/"
+BASE_PATH = "Data/"
 
 # when streaming, which sensors to use is sent from the basestation
 USE_ACCEL = True                # read data from Shimmer3

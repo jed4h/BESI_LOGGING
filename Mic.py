@@ -14,9 +14,9 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
     server_address = (hostIP, BASE_PORT)
     # use custom function because datetime.strptime fails in multithreaded applications
     startTimeDT = NTPTime.stripDateTime(startDateTime)
-    audioFileName = "/media/card/Relay_Station{0}/Audio/Audio{1}.txt".format(BASE_PORT, startTimeDT)
-    doorFileName = "/media/card/Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
-    tempFileName = "/media/card/Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
+    audioFileName = BASE_PATH+"Relay_Station{0}/Audio/Audio{1}.txt".format(BASE_PORT, startTimeDT)
+    doorFileName = BASE_PATH+"Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
+    tempFileName = BASE_PATH+"Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
     
     
         
@@ -52,9 +52,9 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
 			doorFile.close()
 			tempFile.close()
 			
-			audioFileName = "/media/card/Relay_Station{0}/Audio/Audio{1}.txt".format(BASE_PORT, startTimeDT)
-			doorFileName = "/media/card/Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
-			tempFileName = "/media/card/Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
+			audioFileName = BASE_PATH+"Relay_Station{0}/Audio/Audio{1}.txt".format(BASE_PORT, startTimeDT)
+			doorFileName = BASE_PATH+"Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
+			tempFileName = BASE_PATH+"Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
 			
 			with open(audioFileName, "w") as audioFile:
 				audioFile.write(startDateTime+"\n")

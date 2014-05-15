@@ -23,7 +23,7 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 
     server_address = (hostIP, BASE_PORT)
     startTimeDT = NTPTime.stripDateTime(startDateTime)
-    accelFileName =  "/media/card/Relay_Station{0}/Accelerometer/Accelerometer{1}.txt".format(BASE_PORT, startTimeDT)
+    accelFileName =  BASE_PATH+"Relay_Station{0}/Accelerometer/Accelerometer{1}.txt".format(BASE_PORT, startTimeDT)
 	
     ferror = open("error", "a")
 
@@ -91,7 +91,7 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 			startTimeDT = NTPTime.stripDateTime(startDateTime)
 			#startTimeDT = datetime.datetime.now()
 			#accelFile.close()
-			accelFileName = "/media/card/Relay_Station{0}/Accelerometer/Accelerometer{1}.txt".format(BASE_PORT, startTimeDT)
+			accelFileName = BASE_PATH+"Relay_Station{0}/Accelerometer/Accelerometer{1}.txt".format(BASE_PORT, startTimeDT)
 			
 			with open(accelFileName, "w") as accelFile:
 				accelFile.write(startDateTime+"\n")
