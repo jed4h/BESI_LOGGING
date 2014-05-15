@@ -111,7 +111,8 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 	elif (iterations % UPDATE_LENGTH) == (UPDATE_LENGTH - 2):
 		NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " Accelerometer")
 
-	iterations += 1
+	if streamingError == 0: 
+		iterations += 1
 
 	if startTick == -1:
 		currTime = datetime.datetime.now()
@@ -174,7 +175,7 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 	    rssi_int = int(rssi_reading.split(":")[1].rstrip())	    
 
 	    if iterations%10 == 0:
-		print "sampling Accelerometer {}".format(iterations)
+		print "sampling Accelerometer {} {}".format(connID, iterations)
 
             with open(accelFileName, "a") as accelFile:
                 for i in range(len(z_accel)):
