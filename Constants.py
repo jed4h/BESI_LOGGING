@@ -22,3 +22,47 @@ BASE_PATH = "Data/"
 USE_ACCEL = True                # read data from Shimmer3
 USE_LIGHT = True                # read data from light sensor
 USE_ADC = True                  # read data from the ADC - temperature and microphone
+
+
+# BME 280 parameters
+ctrl_hum = 0xF2
+ctrl_meas = 0xF4
+
+press_msb = 0xF7
+press_lsb = 0xF8
+press_xlsb = 0xF9
+
+temp_msb = 0xFA
+temp_lsb = 0xFB
+temp_xlsb = 0xFC
+
+hum_msb = 0xFD
+hum_lsb = 0xFE
+
+# use readU16()
+T1 = 0x88
+T2 = 0x8A
+T3 = 0x8C
+
+P1 = 0x8E
+P2 = 0x90
+P3 = 0x92
+P4 = 0x94
+P5 = 0x96
+P6 = 0x98
+P7 = 0x9A
+P8 = 0x9C
+P9 = 0x9E
+
+H1 = 0xA1 # 8 bits
+H2 = 0xE1 # 16
+H3 = 0xE3 # 8
+H4 = 0xE4
+H5 = 0xE5
+H6 = 0xE7 # 8?
+
+P_data = 0xF7
+T_data = 0xFA
+H_data = 0xFD
+
+start_cmd = 0b00100111

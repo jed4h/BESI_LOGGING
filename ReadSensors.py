@@ -5,6 +5,7 @@ from Constants import *
 from TSL2561 import *
 from Shimmer3 import *
 from Mic import *
+from BME280 import *
 import socket
 import time
 import csv
@@ -80,7 +81,8 @@ if not os.path.exists(baseFolder + "Audio"):
 	os.mkdir(baseFolder + "Audio")
 if not os.path.exists(baseFolder + "Door"):
 	os.mkdir(baseFolder + "Door")
-
+if not os.path.exists(baseFolder + "Weather"):
+	os.mkdir(baseFolder + "Weather")
 
 print ("Default Settings:")
 print ("Base Station IP Address: {0}".format(BaseStation_IP2))
@@ -139,6 +141,7 @@ while True:
 		USE_ACCEL = True
 		USE_LIGHT = True
 		USE_ADC = True
+		USE_WEATHER = True
 
 		#print startDateTime
 
@@ -165,7 +168,9 @@ while True:
 			# all sensors that use the ADC need to be managed by a single thread
 			ADCThread = threading.Thread(target=soundSense, args = (startDateTime, hostIP, BASE_PORT, IS_STREAMING, IS_LOGGING))
 			ADCThread.setDaemon(True)
-
+		if USE_WEATHER:
+			weatherThread = threading.Thread(target=weatherSense, args=(startDateTime,hostIP,BASE_PORT))
+			weatherThread.setDaemon(True)
 
 
 	# trap keyboard interrupt
@@ -176,6 +181,8 @@ while True:
 			lightThread.start()
 		if USE_ADC:
 			ADCThread.start()
+		if USE_WEATHER:
+			weatherThread.start()
 		#while True:
 		#    pass
 
@@ -185,6 +192,8 @@ while True:
 			lightThread.join()
 		if USE_ADC:
 			ADCThread.join()
+		if USE_WEATHER:
+			weatherThread.join()
 	
     
 	except:
