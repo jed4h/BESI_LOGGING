@@ -60,7 +60,8 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
     # give sensors some time to start up
     time.sleep(1)
     print "Connection Established to {}".format(connID)
-	
+    startDateTime = NTPTime.sendUpdate(server_address, 0, " Connected to {}".format(connID))
+
     lastTime = 0
     startTick = -1
     numRollover = 0
@@ -118,6 +119,7 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 	    if streamingError == 0:
 		    # log every disconnect event in a file
 		    ferror.write("Connection Lost from {}. Time: {}\n".format(connID, datetime.datetime.now()-startTime))
+       		    startDateTime = NTPTime.sendUpdate(server_address, 0, " Disconnected from {}".format(connID))
 
             streamingError = 1
             try:
@@ -133,6 +135,8 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
                 time.sleep(1)
 		# log reconnect events to a file
     		ferror.write("Connection Re-established to {}. Time: {}\n".format(connID, datetime.datetime.now()-startTime))
+		startDateTime = NTPTime.sendUpdate(server_address, 0, " Connected to {}".format(connID))
+
 		
 		lastTime = 0
 		startTick = -1
@@ -186,12 +190,12 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 		  
         time.sleep(1)
 		
-def sendUpdateAccel(server_address, iterations):
+def sendUpdateAccel(server_address, iterations, message = "accel samples"):
 	updateSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	updateSock.settimeout(10)
 	try:
 		updateSock.connect(server_address)
-		updateSock.sendall("{} accel samples".format(iterations))
+		updateSock.sendall("{} ".format(iterations) + message)
 		return updateSock.recv(1024)
 	except:
 		print "error updating base station"
