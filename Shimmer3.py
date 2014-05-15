@@ -107,11 +107,10 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 				numRollover = 0
 
 	elif (iterations % UPDATE_LENGTH) == (UPDATE_LENGTH - 2):
-		NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " Accelerometer")
-
-	# only update iteration count when connected to the Shimmer
-	if streamingError == 0: 
-		iterations += 1
+		if streamingError == 0:
+			NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " Accelerometer")
+ 
+	iterations += 1
 
 	# get time since the start on the first iteration
 	if startTick == -1:
