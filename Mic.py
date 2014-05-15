@@ -75,8 +75,10 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
 				
 				startTime = datetime.datetime.now()
 
-		iterations += 1
+		elif (iterations % UPDATE_LENGTH) == (UPDATE_LENGTH - 2):
+			NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " ADC")	
 
+		iterations += 1
 		
 		# calculate the time since the start of the data collection
 		currTime = datetime.datetime.now()

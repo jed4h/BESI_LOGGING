@@ -13,7 +13,8 @@ UPDATE_DELAY = 10               # number of loop iterations between reading ligh
 LOOP_DELAY = 0.1                # loop time in seconds
 IS_STREAMING = True             # stream to base station 
 IS_LOGGING = True               # log on Beaglebone
-FILE_LENGTH = 300
+FILE_LENGTH = 60
+UPDATE_LENGTH = 20
 #BASE_PATH = "/media/card/"
 BASE_PATH = "Data/"
 

@@ -43,6 +43,10 @@ def lightSense(startDateTime, hostIP, BASE_PORT,  streaming=True, logging=True):
 			    		lightFile.write("Timestamp,Lux\n")
 				
 				startTime = datetime.datetime.now()
+		
+		elif (iterations % UPDATE_LENGTH) == (UPDATE_LENGTH - 2):
+			NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " light samples", 5)
+
 
 		iterations += 1
 
