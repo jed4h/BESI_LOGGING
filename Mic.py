@@ -46,32 +46,34 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
 		if iterations >= FILE_LENGTH:
 			startDateTime = NTPTime.sendUpdate(server_address, iterations, " ADC")
 			iterations = -1
-			#startTimeDT = datetime.datetime.strptime(startDateTime.rstrip(), "%Y-%m-%d %H:%M:%S.%f")
-			startTimeDT = NTPTime.stripDateTime(startDateTime)
-			audioFile.close()
-			doorFile.close()
-			tempFile.close()
 			
-			audioFileName = BASE_PATH+"Relay_Station{0}/Audio/Audio{1}.txt".format(BASE_PORT, startTimeDT)
-			doorFileName = BASE_PATH+"Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
-			tempFileName = BASE_PATH+"Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
+			if startDateTime != None:
+				#startTimeDT = datetime.datetime.strptime(startDateTime.rstrip(), "%Y-%m-%d %H:%M:%S.%f")
+				startTimeDT = NTPTime.stripDateTime(startDateTime)
+				audioFile.close()
+				doorFile.close()
+				tempFile.close()
 			
-			with open(audioFileName, "w") as audioFile:
-				audioFile.write(startDateTime+"\n")
-				audioFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
-				audioFile.write("Timestamp,Ambient Noise Level\n")
+				audioFileName = BASE_PATH+"Relay_Station{0}/Audio/Audio{1}.txt".format(BASE_PORT, startTimeDT)
+				doorFileName = BASE_PATH+"Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
+				tempFileName = BASE_PATH+"Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
+			
+				with open(audioFileName, "w") as audioFile:
+					audioFile.write(startDateTime+"\n")
+					audioFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
+					audioFile.write("Timestamp,Ambient Noise Level\n")
 		
-			with open(doorFileName, "w") as doorFile:
-				doorFile.write(startDateTime+"\n")
-				doorFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
-				doorFile.write("Timestamp,Door Sensor Channel 1, Door Sensor Channel 2\n")
+				with open(doorFileName, "w") as doorFile:
+					doorFile.write(startDateTime+"\n")
+					doorFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
+					doorFile.write("Timestamp,Door Sensor Channel 1, Door Sensor Channel 2\n")
 				
-			with open(tempFileName, "w") as tempFile:
-				tempFile.write(startDateTime+"\n")
-				tempFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
-				tempFile.write("Timestamp,Degree F\n")
+				with open(tempFileName, "w") as tempFile:
+					tempFile.write(startDateTime+"\n")
+					tempFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
+					tempFile.write("Timestamp,Degree F\n")
 				
-			startTime = datetime.datetime.now()
+				startTime = datetime.datetime.now()
 
 		iterations += 1
 

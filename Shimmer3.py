@@ -88,22 +88,24 @@ def shimmerSense(startDateTime, hostIP, BASE_PORT, ShimmerID, ShimmerID2, stream
 	if iterations >= FILE_LENGTH:
 			startDateTime = NTPTime.sendUpdate(server_address, iterations, " Accelerometer")
 			iterations = -1
-			startTimeDT = NTPTime.stripDateTime(startDateTime)
-			#startTimeDT = datetime.datetime.now()
-			#accelFile.close()
-			accelFileName = BASE_PATH+"Relay_Station{0}/Accelerometer/Accelerometer{1}.txt".format(BASE_PORT, startTimeDT)
+			# only start a new file when we get a timestamp from the base station
+			if startDateTime != None:
+				startTimeDT = NTPTime.stripDateTime(startDateTime)
+				#startTimeDT = datetime.datetime.now()
+				#accelFile.close()
+				accelFileName = BASE_PATH+"Relay_Station{0}/Accelerometer/Accelerometer{1}.txt".format(BASE_PORT, startTimeDT)
 			
-			with open(accelFileName, "w") as accelFile:
-				accelFile.write(startDateTime+"\n")
-				accelFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
-				accelFile.write("Timestamp,X-Axis,Y-Axis,Z-Axis\n")
+				with open(accelFileName, "w") as accelFile:
+					accelFile.write(startDateTime+"\n")
+					accelFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
+					accelFile.write("Timestamp,X-Axis,Y-Axis,Z-Axis\n")
 
-			startTime = datetime.datetime.now()
-			lastRelTime = -10000
-			lastValidRelTime = -10000
-			lastTime = 0
-			startTick = -1				
-			numRollover = 0
+				startTime = datetime.datetime.now()
+				lastRelTime = -10000
+				lastValidRelTime = -10000
+				lastTime = 0
+				startTick = -1				
+				numRollover = 0
 	iterations += 1
 	# if an exception is raised receiving data or connection is lost (streamingError == 1) try to reconnect
         try:

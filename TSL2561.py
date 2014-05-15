@@ -29,18 +29,20 @@ def lightSense(startDateTime, hostIP, BASE_PORT,  streaming=True, logging=True):
 
     while True:
 		if iterations >= FILE_LENGTH:
-			startDateTime = NTPTime.sendUpdate(server_address, iterations," light samples")
+			startDateTime = NTPTime.sendUpdate(server_address, iterations," light samples", 5)
 			iterations = -1
-			startTimeDT = NTPTime.stripDateTime(startDateTime)
-			#startTimeDT = datetime.datetime.now()
-			
-			lightFileName = BASE_PATH+"Relay_Station{0}/Light/Light{1}.txt".format(BASE_PORT, startTimeDT)
-			with open(lightFileName, "w") as lightFile:
-			    lightFile.write(startDateTime+"\n")
-			    lightFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
-			    lightFile.write("Timestamp,Lux\n")
 				
-			startTime = datetime.datetime.now()
+			if startDateTime != None:
+				startTimeDT = NTPTime.stripDateTime(startDateTime)
+				#startTimeDT = datetime.datetime.now()
+			
+				lightFileName = BASE_PATH+"Relay_Station{0}/Light/Light{1}.txt".format(BASE_PORT, startTimeDT)
+				with open(lightFileName, "w") as lightFile:
+			    		lightFile.write(startDateTime+"\n")
+			    		lightFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
+			    		lightFile.write("Timestamp,Lux\n")
+				
+				startTime = datetime.datetime.now()
 
 		iterations += 1
 

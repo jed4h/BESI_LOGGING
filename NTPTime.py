@@ -65,9 +65,9 @@ def stripDateTime(dateTimeString):
 	dtList =  dateTimeString.replace("-", " ").replace(":"," ").replace("."," ").split(" ")
 	return dtList[0]+"-"+dtList[1]+"-"+dtList[2]+"_"+dtList[3]+"-"+dtList[4]+"-"+dtList[5]
 	
-def sendUpdate(server_address, iterations, message):
+def sendUpdate(server_address, iterations, message, timeout = 10):
 	updateSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	updateSock.settimeout(10)
+	updateSock.settimeout(timeout)
 	try:
 		updateSock.connect(server_address)
 		updateSock.sendall("{}".format(iterations) + message)
