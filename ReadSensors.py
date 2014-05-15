@@ -3,7 +3,6 @@ from gpio_utils import *
 from ShimmerBT import *
 from Constants import *
 from TSL2561 import *
-from LM60 import *
 from Shimmer3 import *
 from Mic import *
 import socket
