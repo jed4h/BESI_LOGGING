@@ -64,8 +64,10 @@ for line in fconfig:
 
 default_settings = ''
 
+if not os.path.exists("Data"):
+	os.mkdir("Data")
 # create data storage files
-baseFolder = "/media/card/Relay_Station{}/".format(relayStation_ID2)
+baseFolder = BASE_PATH+"Relay_Station{}/".format(relayStation_ID2)
 if not os.path.exists(baseFolder):
 	os.mkdir(baseFolder)
 if not os.path.exists(baseFolder + "Accelerometer"):
