@@ -1,3 +1,7 @@
+# code to read data from the BME teperature/humidity/pressure sensor
+# assumes the sensor is connected to I2C bus 2 (pins 17 and 18)
+# formulas and register addresses are fromthe BME 280 datasheet
+
 from gpio_utils import *
 from Constants import *
 import NTPTime
@@ -10,7 +14,7 @@ import ctypes
 import subprocess
 
 
-
+# calibration values set at manufacture time
 class BME280Calib:
 	def __init__(self, i2c):
 		self.c_T1 = i2c.readU16(T1)
@@ -34,12 +38,14 @@ class BME280Calib:
 		self.c_H5 = ctypes.c_int16((i2c.readU8(H5+1) << 4) | (i2c.readU8(H5) >> 4)).value
 		self.c_H6 = i2c.readS8(H6)
 
+# activates sensors and sets oversample rate to 1x (not sure what that means)
 def BME280Init(i2cAddr, i2cBus):
 	i2c = Adafruit_I2C(i2cAddr,i2cBus)
 	i2c.write8(ctrl_hum, 0x1)
 	i2c.write8(ctrl_meas, start_cmd)
 	return i2c
 
+# returs temperature in C and t_fine (used for other sensors)
 def readTemp(i2c, calib):
 	# measure temperature
 	adc_T = (i2c.readU8(T_data) << 12) | (i2c.readU8(T_data + 1) << 4) | (i2c.readU8(T_data + 2) >> 4)
@@ -48,6 +54,7 @@ def readTemp(i2c, calib):
 	t_fine = var1 + var2
 	return ((t_fine*5 + 128) >> 8)/100.0, t_fine
 	
+# returns ressure in Pa
 def readPressure(i2c, calib, t_fine):
 	# measure pressure
 	adc_P = (i2c.readU8(P_data) << 12) | (i2c.readU8(P_data + 1) << 4) | (i2c.readU8(P_data + 2) >> 4)
@@ -63,7 +70,8 @@ def readPressure(i2c, calib, t_fine):
 	var2 = ((calib.c_P8)*P)>>19
 	P = ((P + var1 + var2) >> 8) + ((calib.c_P7)<<4)
 	return (P/256.)
-	
+
+# returns humitity in % relative humidity	
 def readHumidity(i2c, calib, t_fine):
 	# measure humidity
 	adc_H = (i2c.readU8(H_data) << 8) | (i2c.readU8(H_data + 1))
@@ -76,6 +84,7 @@ def readHumidity(i2c, calib, t_fine):
 
 	return (var1>>12)/1024.0
 
+# reads weather data and stores in a local file
 def weatherSense(startDateTime, hostIP, BASE_PORT, streaming=True, logging=True):
     i2c = BME280Init(0x77, 2)
     calib = BME280Calib(i2c)
