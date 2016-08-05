@@ -74,21 +74,21 @@ def sendUpdate(server_address, iterations, message, timeout = 5):
 		
 		# first 3 bytes are length of message
 		msgLen = ''
-		while (len(msgLen) != 3):
+		while (len(msgLen) < 3):
 			try:
 				msgLen = msgLen + updateSock.recv(3)
 			except:
 				pass
-
+				return
 		msgLen = int(msgLen)
 		data = ''    
 		# call recv until we get all the data
-		while (len(data) != msgLen):
+		while (len(data) < msgLen):
 			try:
 				data = data + updateSock.recv(msgLen)
 			except:
 				pass
-			
+				return
 		splitData = data.split(",")
 		#data format is <USE_ACCEL>,<USE_ADC>,<USE_LIGHT>,<ShimmerID>
 		
