@@ -64,7 +64,8 @@ def stripDateTime(dateTimeString):
 	# get a list with format: [year, month, day, hour, minute, second, fraction ofa second]
 	dtList =  dateTimeString.replace("-", " ").replace(":"," ").replace("."," ").split(" ")
 	return dtList[0]+"-"+dtList[1]+"-"+dtList[2]+"_"+dtList[3]+"-"+dtList[4]+"-"+dtList[5]
-	
+
+# send an update message to the BaseStation	
 def sendUpdate(server_address, iterations, message, timeout = 5):
 	updateSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	updateSock.settimeout(timeout)
@@ -78,7 +79,7 @@ def sendUpdate(server_address, iterations, message, timeout = 5):
 			try:
 				msgLen = msgLen + updateSock.recv(3)
 			except:
-				pass
+				# if this fails, just return, which indicates failed update
 				return
 		msgLen = int(msgLen)
 		data = ''    
@@ -87,11 +88,10 @@ def sendUpdate(server_address, iterations, message, timeout = 5):
 			try:
 				data = data + updateSock.recv(msgLen)
 			except:
-				pass
 				return
 		splitData = data.split(",")
-		#data format is <USE_ACCEL>,<USE_ADC>,<USE_LIGHT>,<ShimmerID>
-		
+		#data format is <ShimmerID1>,<ShimmerID2>,<current time>
+		# return current BS time
 		return splitData[2] 
 		
 	except:

@@ -1,6 +1,6 @@
 # code to read data from the BME teperature/humidity/pressure sensor
 # assumes the sensor is connected to I2C bus 2 (pins 17 and 18)
-# formulas and register addresses are fromthe BME 280 datasheet
+# formulas and register addresses are from the BME 280 datasheet
 
 from gpio_utils import *
 from Constants import *
@@ -45,7 +45,7 @@ def BME280Init(i2cAddr, i2cBus):
 	i2c.write8(ctrl_meas, start_cmd)
 	return i2c
 
-# returs temperature in C and t_fine (used for other sensors)
+# returns temperature in C and t_fine (used for other sensors)
 def readTemp(i2c, calib):
 	# measure temperature
 	adc_T = (i2c.readU8(T_data) << 12) | (i2c.readU8(T_data + 1) << 4) | (i2c.readU8(T_data + 2) >> 4)
@@ -81,6 +81,10 @@ def readHumidity(i2c, calib, t_fine):
 		+ (2097152)) * (calib.c_H2) + 8192) >> 14))
 	var1 = (var1 - (((((var1 >> 15) * (var1 >> 15)) >> 7) *
 					 (calib.c_H1)) >> 4))
+	if var1 < 0:
+		var1 = 0
+	elif var1 > 419430400:
+		var1 = 419430400	
 
 	return (var1>>12)/1024.0
 
@@ -104,6 +108,7 @@ def weatherSense(startDateTime, hostIP, BASE_PORT, streaming=True, logging=True)
 
     while True:
 		if iterations >= FILE_LENGTH:
+			# update BS and get current time
 			startDateTime = NTPTime.sendUpdate(server_address, iterations," weather samples", 5)
 			iterations = -1
 				
@@ -119,8 +124,9 @@ def weatherSense(startDateTime, hostIP, BASE_PORT, streaming=True, logging=True)
 				
 				startTime = datetime.datetime.now()
 		
+		# every UPDATE_LENGTH send update to BS
 		elif (iterations % UPDATE_LENGTH) == (UPDATE_LENGTH - 2):
-			NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " weather samples", 5)
+			NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " weather samples", UPDATE_LENGTH)
 
 
 		iterations += 1
@@ -128,8 +134,7 @@ def weatherSense(startDateTime, hostIP, BASE_PORT, streaming=True, logging=True)
 		# calculate time since start
 		currTime = datetime.datetime.now()
 		currTimeDelta = (currTime - startTime).days * 86400 + (currTime - startTime).seconds + (currTime - startTime).microseconds / 1000000.0
-		# read light sensor
-		# error reading i2c bus. Try to reinitialize sensor
+		# read sensor data over I2C
 		(temp,t_fine) = readTemp(i2c, calib)
 		pressure = readPressure(i2c, calib, t_fine)
 		humidity = readHumidity(i2c, calib, t_fine)

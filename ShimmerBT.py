@@ -20,7 +20,7 @@ import subprocess
 
 
 # use hcitool to scan for Bluetooth devices
-# lightblue.finddevices oes not show Shimmers
+# lightblue.finddevices does not show Shimmers
 def BTScan():
     proc = subprocess.Popen(["hcitool","scan"], stdout=subprocess.PIPE)
     return proc.communicate()[0].split()
@@ -84,7 +84,7 @@ def startStreaming(socket):
     	else:
 		return 0
     
-# not used. Streaming stops when the Bluetooth connection os broken
+# not used. Streaming stops when the Bluetooth connection is broken
 def stopStreaming(socket):
     socket.send("\x20")
     
@@ -92,7 +92,7 @@ def stopStreaming(socket):
 def toggleLED(socket):
     socket.send("\x06")
     
-# reads 1 secnd of accelerometer data from the Bluetooth
+# reads 1 second of accelerometer data from the Bluetooth
 #returns lists of timestamps and accel. data
 def sampleAccel(socket):
     #print datetime.datetime.now()
@@ -103,6 +103,7 @@ def sampleAccel(socket):
     y_accel = []
     z_accel = []
     
+    # send ACK back to the Shimmer
     try:
 	socket.send("\x21")
     except:
@@ -121,6 +122,8 @@ def sampleAccel(socket):
     #except:
 	#pass
  
+    # data packets from the Shimmer are 9 bytes and start with 0 followed by 0 or 128
+    # this might need to be changed for different sampling rates
     while True:
 	# find the start of a packet
     	for i  in range(start,len(accel_tuple)):
@@ -130,17 +133,16 @@ def sampleAccel(socket):
             	    break
 	    except:
 		break
-
+	# less than a full packet of data
 	if ((start + 8) > sizeRecv):
 		break
         #print start
 
-	for i in range(8):        
-        #for i in range(sizeRecv-start):
-        # print "i = {0}".format(i)
+	for i in range(8):
+	    # first 2 bytes are timestamp        
             if (i % 9) == 1:
                 timestamp.append((accel_tuple[i + start]<< 8) + accel_tuple[i-1 + start]) 
-
+	    # bytes 3 and 4 are x-axis
             if (i % 9) == 3:
                x_accel.append((accel_tuple[i + start]<< 8) + accel_tuple[i-1 + start])
 
@@ -151,12 +153,7 @@ def sampleAccel(socket):
                 z_accel.append((accel_tuple[i + start]<< 8) + accel_tuple[i-1 + start])
 
         start = start + 8
-        #for val in range(len(z_accel)):
-        #    print("{0} {1} {2} {3}".format(timestamp[val], x_accel[val], y_accel[val], z_accel[val]))
-    #print timestamp[0],x_accel[0],y_accel[0],z_accel[0]        
-    #print timestamp[64],x_accel[64],y_accel[64],z_accel[64]        
-    #print datetime.datetime.now()
-   
+
     return timestamp, x_accel, y_accel, z_accel
 
 # write one second of data to a csv file

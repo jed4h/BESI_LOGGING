@@ -18,10 +18,7 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
     doorFileName = BASE_PATH+"Relay_Station{0}/Door/Door{1}.txt".format(BASE_PORT, startTimeDT)
     tempFileName = BASE_PATH+"Relay_Station{0}/Temperature/Temperature{1}.txt".format(BASE_PORT, startTimeDT)
     
-    
-        
-    # get the start time according to the BeagleBone. This time is only useful for detirmining time deltas
-    
+    # write header information
     with open(audioFileName, "w") as audioFile:
         audioFile.write(startDateTime+"\n")
 	audioFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
@@ -37,6 +34,7 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
 	tempFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
 	tempFile.write("Timestamp,Degree F\n")
 		
+    # get starting time according to the BBB. This is only used for time deltas
     startTime = datetime.datetime.now()
 	
     iterations = -1
@@ -44,11 +42,12 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
     while True:
 	
 		if iterations >= FILE_LENGTH:
+			# update BS and get current time every FILE_LENGTH iterations
 			startDateTime = NTPTime.sendUpdate(server_address, iterations, " ADC")
 			iterations = -1
 			
+			# if startDateTime == None, the update failed, so we keep writing to the old file
 			if startDateTime != None:
-				#startTimeDT = datetime.datetime.strptime(startDateTime.rstrip(), "%Y-%m-%d %H:%M:%S.%f")
 				startTimeDT = NTPTime.stripDateTime(startDateTime)
 				audioFile.close()
 				doorFile.close()
@@ -72,9 +71,10 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
 					tempFile.write(startDateTime+"\n")
 					tempFile.write("Deployment ID: Unknown, Relay Station ID: {}\n".format(BASE_PORT))
 					tempFile.write("Timestamp,Degree F\n")
-				
+				# get new local start time
 				startTime = datetime.datetime.now()
 
+		# update BS every UPDATE_LENGTH iterations
 		elif (iterations % UPDATE_LENGTH) == (UPDATE_LENGTH - 2):
 			NTPTime.sendUpdate(server_address, UPDATE_LENGTH, " ADC")	
 
@@ -114,7 +114,6 @@ def soundSense(startDateTime, hostIP, BASE_PORT, streaming = True, logging = Tru
 		except:
 			sys.exit()
 
-		#tempSock.sendall("{0:0.4f},{1:03.2f},{2:03.2f},\n".format(float(split_output[-2]) + currTimeDelta, tempC, tempF))
 		with open(tempFileName, "a") as tempFile:
 		    tempFile.write("{0:0.4f},{1:03.2f},\n".format(float(split_output[-2]) + currTimeDelta, tempF))
 

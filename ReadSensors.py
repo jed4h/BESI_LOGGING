@@ -13,38 +13,7 @@ import threading
 import sys
 import os
 
-# reads analog in from temperature sensor connected to AIN0
-# reads Montion sensor connected to GPIO0_7 and writes value to 
-# LED coneected to GPIO1_28
-# Light sensor connected to I2C bus 1
-#   GND             P9_1
-#   VCC (3.3V)      P9_3
-#   SCL             P9_19
-#   SDA             P9_20
-#   
-#
-#   TMP OUT         P9_39
-#
-#   mic OUT         P9_40
-#   mic VCC (1.8V)  P9_32
-#
-#
-#
-#
-
-
-
-#i=0
-#streamingError = 0  # set to 1 if we lose connecting while streaming
-
-#if len(sys.argv) == 2:
-#    hostIP = str(sys.argv[1])
-#else:
-#    hostIP = HOST
-#    print "No IP address given, using default"
-
-# read defaults from config file
-
+# get BS IP and RS port # from config file
 fconfig = open("config")
 for line in fconfig:
 	if line[0] == "#":
@@ -65,6 +34,7 @@ for line in fconfig:
 
 default_settings = ''
 
+# create local data folder - not needed if using SD card
 if not os.path.exists("Data"):
 	os.mkdir("Data")
 # create data storage files
@@ -100,8 +70,8 @@ else:
 	BASE_PORT = relayStation_ID2 
 
 while True:
-	# get the shimmerID and what sensors to use from the base station if we are streaming
-	# if not streaming, use default values
+	# get the shimmerID and what sensors to use from the base station 
+	# IS_STREAMING is always True
 	if IS_STREAMING:
 		synchSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		server_address_synch = (hostIP, BASE_PORT)
@@ -133,7 +103,7 @@ while True:
 				data = data + synchSock.recv(msgLen)
 			except:
 				pass
-			
+		# Base Station sends Shimmer BT IDs and start time
 		splitData = data.split(",")
 		SHIMMER_ID = splitData[0]
 		SHIMMER_ID2 = splitData[1]
@@ -153,6 +123,7 @@ while True:
 	if IS_STREAMING:
 
 		if USE_ACCEL:
+		    # create thread to handle interfacing with the Shimmer
 		    accelThread = threading.Thread(target=shimmerSense, args=(startDateTime, hostIP, BASE_PORT,  SHIMMER_ID, SHIMMER_ID2, IS_STREAMING, IS_LOGGING))
 		    # Thread will stop when parent is stopped
 		    accelThread.setDaemon(True)
@@ -182,9 +153,8 @@ while True:
 			ADCThread.start()
 		if USE_WEATHER:
 			weatherThread.start()
-		#while True:
-		#    pass
-
+		
+		# wait until every thread exits (should never happen)
 		if USE_ACCEL:
 			accelThread.join()
 		if USE_LIGHT:
