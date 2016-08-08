@@ -17,6 +17,7 @@ FILE_LENGTH = 60
 UPDATE_LENGTH = 20
 #BASE_PATH = "/media/card/"
 BASE_PATH = "Data/"
+USE_WEATHER = True
 
 # when streaming, which sensors to use is sent from the basestation
 USE_ACCEL = True                # read data from Shimmer3

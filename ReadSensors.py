@@ -141,7 +141,6 @@ while True:
 		USE_ACCEL = True
 		USE_LIGHT = True
 		USE_ADC = True
-		USE_WEATHER = True
 
 		#print startDateTime
 
