@@ -1,5 +1,6 @@
 
 #Constants used in BBB BESI code
+SHIMMER_BASE = "00:06:66:"	# first 3 bytes of every Shimmer's Bt address
 PORT = 1                        # common to all shimmers
 LIGHT_ADDR = 0x39               # i2c address of light sensor
 LIGHT_REG_LOW = 0xAC            # address of low bits of light sensor channel 0
